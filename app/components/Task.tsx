@@ -39,7 +39,7 @@ const Task: React.FC<TaskProps> = ({ task }: TaskProps) => {
     return (
         <tr key={task.id}>
             <td>{task.text}</td>
-            <td className='flex'>
+            <td className='flex justify-end'>
                 <div className='flex justify-center items-center gap-4'>
                     <AiOutlineEdit cursor='pointer' className="text-violet-500" onClick={() => setOpenModalEdit(true)} />
                     <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit} >
