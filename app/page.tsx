@@ -1,9 +1,11 @@
-import { getAllTodos } from "@/api";
+
+ import { getAllTodos } from "@/api";
 import AddTask from "./components/AddTask";
 import TodoList from "./components/TodoList";
 
 export default async function Home() {
   const tasks = await getAllTodos()
+
   console.log("taasks", tasks)
   return (
     <main className=" max-w-2xl mx-auto ">
