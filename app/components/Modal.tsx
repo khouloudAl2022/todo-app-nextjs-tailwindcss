@@ -14,7 +14,6 @@ const Modal: React.FC<modalProps> = ({ modalOpen, setModalOpen, children }) => {
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => setModalOpen(false)}>✕</button>
                 </form>
                 {children}
-
             </div>
         </dialog>
 
