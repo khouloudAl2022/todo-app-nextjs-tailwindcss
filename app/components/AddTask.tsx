@@ -9,13 +9,17 @@ import { addTodo } from "@/api";
 const AddTask = () => {
     const [modalOpen, setModalOpen] = useState<boolean>(false)
     const [newTaskValue, setNEwTaskValue] = useState<string>("")
+
+    
     const handleSubmitNewTodo: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault()
         await addTodo({
-            id: "3",
+            id: Math.random(),
             text: newTaskValue
-        })       
-        // setModalOpen(false);
+        })     
+        setNEwTaskValue("")  
+        setModalOpen(false);
+        
     }
     return (
         <div>
