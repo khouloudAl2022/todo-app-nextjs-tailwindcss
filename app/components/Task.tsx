@@ -5,7 +5,7 @@ import React, { FormEventHandler, useState } from 'react'
 import { AiOutlineEdit } from "react-icons/ai";
 import { IoTrashBinOutline } from "react-icons/io5";
 import Modal from './Modal';
-import { getAllTodos } from '@/api';
+import { deleteTodo, editTodo, getAllTodos } from '@/api';
 import { useRouter } from 'next/navigation';
 
 interface TaskProps {
@@ -14,26 +14,27 @@ interface TaskProps {
 const Task: React.FC<TaskProps> = ({ task }: TaskProps) => {
     const router = useRouter()
     const [openModalEdit, setOpenModalEdit] = useState(false)
-    // const [openModalEdit, setOpenModalEdit] = useState()
+    const [openModalDelete, setOpenModalDelete] = useState(false)
     const [taskToEdit, setTaskTodEdit] = useState<string>(task.text)
 
-
+    //handle edit function
     const handleSubmitEditTodo: FormEventHandler<HTMLFormElement> = async (e) => {
-
         e.preventDefault()
 
-        // await addTodo({
-        //     id: uuidv4(),
-        //     text: newTaskValue
-        // })
+        await editTodo({
+            id: task.id,
+            text: taskToEdit
+        })
         setTaskTodEdit("")
-        await getAllTodos();
         setOpenModalEdit(false);
         router.refresh()
-
-
     }
-
+    //handle delete function 
+    const handleDeleteTask = async (id: string) => {
+        await deleteTodo(id)
+        setOpenModalDelete(false)
+        router.refresh()
+    }
 
     return (
         <tr key={task.id}>
@@ -51,7 +52,15 @@ const Task: React.FC<TaskProps> = ({ task }: TaskProps) => {
                             </div>
                         </form>
                     </Modal>
-                    <IoTrashBinOutline cursor='pointer' className='text-red-400' />
+                    <IoTrashBinOutline cursor='pointer' className='text-red-400' onClick={() => setOpenModalDelete(true)} />
+                    <Modal modalOpen={openModalDelete} setModalOpen={setOpenModalDelete} >
+
+                        <div className="modal-action">
+                            <h3 className="font-normal text-lg ">Are you sure you want to delete this task ?</h3>
+
+                            <button type="button" className="btn btn-primary" onClick={() => handleDeleteTask(task.id)}>Yess</button>
+                        </div>
+                    </Modal>
                 </div>
             </td>
         </tr>
