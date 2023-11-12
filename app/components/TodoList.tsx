@@ -1,13 +1,26 @@
+'use client'
+
 import { ITask } from '@/types/tasks'
 import React from 'react'
 import Task from './Task'
+import { useQuery } from '@tanstack/react-query'
+import { getAllTodos } from '@/api'
 
 interface TodoListProps {
   tasks: ITask[]
 }
 
 
-const TodoList: React.FC<TodoListProps> = ({ tasks }) => {
+const TodoList: React.FC<TodoListProps> = () => {
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["userTodos"],
+    queryFn: getAllTodos
+  })
+  console.log("dataaaaaaa", data)
+
+  if (isLoading) return <div>Loading ...</div>
+
   return (
     <div className="w-full ">
       <table className="table">
@@ -19,7 +32,7 @@ const TodoList: React.FC<TodoListProps> = ({ tasks }) => {
           </tr>
         </thead>
         <tbody>
-          {tasks.map(task => {
+          {data && data.map(task => {
             return (
               <Task task={task} key={task.id} />
             )
