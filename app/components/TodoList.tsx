@@ -1,46 +1,47 @@
-'use client'
+"use client";
 
-import { ITask } from '@/types/tasks'
-import React from 'react'
-import Task from './Task'
-import { useQuery } from '@tanstack/react-query'
-import { getAllTodos } from '@/api'
+import { ITask } from "@/types/tasks";
+import React, { useEffect } from "react";
+import Task from "./Task";
+import { useQuery } from "@tanstack/react-query";
+import { getAllTodos } from "@/api";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS
 
-interface TodoListProps {
-  tasks: ITask[]
-}
+const TodoList = () => {
+
+  const { data, isLoading, isError, isSuccess } = useQuery({ queryKey: ["userTodos"], queryFn: getAllTodos });
 
 
-const TodoList: React.FC<TodoListProps> = () => {
+  if (isError) {
+    return <div>error...</div>
+  }
+  if (isLoading) {
+    return <div>Loading ...</div>;
+  }
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["userTodos"],
-    queryFn: getAllTodos
-  })
-  console.log("dataaaaaaa", data)
-
-  if (isLoading) return <div>Loading ...</div>
 
   return (
     <div className="w-full ">
       <table className="table">
         {/* head */}
         <thead>
-          <tr className=''>
+          <tr className="">
             <th>Task</th>
-            <th className='flex justify-end'>Action</th>
+            <th className="flex justify-end">Action</th>
           </tr>
         </thead>
         <tbody>
-          {data && data.map(task => {
-            return (
-              <Task task={task} key={task.id} />
-            )
-          })}
+          {data &&
+            data.map((task) => {
+              return <Task task={task} key={task.id} />;
+            })}
         </tbody>
       </table>
-    </div>
-  )
-}
+      <ToastContainer />
 
-export default TodoList
+    </div>
+  );
+};
+
+export default TodoList;

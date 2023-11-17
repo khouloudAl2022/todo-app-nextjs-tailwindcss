@@ -8,7 +8,7 @@ const baseUrl = 'http://localhost:3001'
 // get todo 
 
 export const getAllTodos = async (): Promise<ITask[]> => {
-    const res = await fetch(`${baseUrl}/tasks`/*, { cache: 'no-store' }*/);
+    const res = await fetch(`${baseUrl}/tasks`, { cache: 'no-store' });
     const todos = await res.json();
     return todos;
 }
@@ -46,7 +46,5 @@ export const editTodo = async (todo: ITask): Promise<ITask> => {
 export const deleteTodo = async (id: string): Promise<void> => {
     await fetch(`${baseUrl}/tasks/${id}`, {
         method: "DELETE",
-       
     })
-
 }

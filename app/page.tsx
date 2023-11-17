@@ -1,9 +1,11 @@
 
+import { useEffect } from "react";
 import AddTask from "./components/AddTask";
 import TodoList from "./components/TodoList";
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS
 
 export default async function Home() {
- 
+
   return (
 
     <main className=" max-w-2xl mx-auto ">
