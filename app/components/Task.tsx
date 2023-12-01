@@ -7,6 +7,9 @@ import { IoTrashBinOutline } from "react-icons/io5";
 import Modal from './Modal';
 import { deleteTodo, editTodo, getAllTodos } from '@/api';
 import { useRouter } from 'next/navigation';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ToastContainer, toast } from "react-toastify";
+import SpinnerLoading from './SpinnerLoading';
 
 interface TaskProps {
     task: ITask
@@ -16,6 +19,7 @@ const Task: React.FC<TaskProps> = ({ task }: TaskProps) => {
     const [openModalEdit, setOpenModalEdit] = useState(false)
     const [openModalDelete, setOpenModalDelete] = useState(false)
     const [taskToEdit, setTaskTodEdit] = useState<string>(task.text)
+    const queryClient = useQueryClient()
 
     //handle edit function
     const handleSubmitEditTodo: FormEventHandler<HTMLFormElement> = async (e) => {
@@ -29,12 +33,45 @@ const Task: React.FC<TaskProps> = ({ task }: TaskProps) => {
         setOpenModalEdit(false);
         router.refresh()
     }
+    //query delete todo task 
+
+
+    const { mutate: deleteTask, isLoading: deleteLoading } = useMutation({
+        mutationFn: deleteTodo,
+        onSuccess: () => {
+            toast.success('task deleted successfully'),
+                setOpenModalDelete(false)
+            queryClient.invalidateQueries(['userToDos'])
+
+        },
+        onError: () => {
+            toast.error("there was an error")
+        }
+
+    })
+    //edit todo
+    const { mutate: editTask, isLoading: editTodoLoading } = useMutation({
+        mutationFn: editTodo,
+        onSuccess: () => {
+            toast.success('task edited successfully'),
+                setOpenModalEdit(false)
+            queryClient.invalidateQueries(['userToDos'])
+
+        },
+        onError: () => {
+            toast.error("there was an error")
+        }
+
+    })
+
+
+
     //handle delete function 
-    const handleDeleteTask = async (id: string) => {
-        await deleteTodo(id)
-        setOpenModalDelete(false)
-        router.refresh()
-    }
+    // const handleDeleteTask = async (id: string) => {
+    //     await deleteTodo(id)
+    //     setOpenModalDelete(false)
+    //     router.refresh()
+    // }
 
     return (
         <tr key={task.id}>
@@ -48,7 +85,7 @@ const Task: React.FC<TaskProps> = ({ task }: TaskProps) => {
 
                             <div className="modal-action">
                                 <input value={taskToEdit} onChange={e => setTaskTodEdit(e.target.value)} type="text" placeholder="Type here" className="input input-bordered input-primary w-full" />
-                                <button type="submit" className="btn btn-primary"> Add</button>
+                                <button type="submit" className="btn btn-primary" onClick={() => editTask({ id: task.id, text: taskToEdit })}> Add</button>
                             </div>
                         </form>
                     </Modal>
@@ -57,12 +94,13 @@ const Task: React.FC<TaskProps> = ({ task }: TaskProps) => {
 
                         <div className="modal-action">
                             <h3 className="font-normal text-lg ">Are you sure you want to delete this task ?</h3>
-
-                            <button type="button" className="btn btn-primary" onClick={() => handleDeleteTask(task.id)}>Yess</button>
+                            <button type="button" className="btn btn-primary" onClick={() => deleteTask(task.id)} disabled={deleteLoading}>Yess</button>
                         </div>
                     </Modal>
                 </div>
             </td>
+            <ToastContainer />
+
         </tr>
     )
 }

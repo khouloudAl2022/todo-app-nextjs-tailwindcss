@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllTodos } from "@/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS
+import SpinnerLoading from "./SpinnerLoading";
 
 const TodoList = () => {
 
@@ -17,7 +18,7 @@ const TodoList = () => {
     return <div>error...</div>
   }
   if (isLoading) {
-    return <div>Loading ...</div>;
+    return <div><SpinnerLoading/></div>;
   }
 
 
